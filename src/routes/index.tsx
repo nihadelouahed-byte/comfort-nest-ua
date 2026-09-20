@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import logoAsset from "@/assets/rahtek-logo.jpg.asset.json";
 import heroAsset from "@/assets/pillow-support.jpg.asset.json";
@@ -134,8 +135,9 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   const [language, setLanguage] = useState<Language>("ar");
+  const [orderOpen, setOrderOpen] = useState(false);
   const t = copy[language];
-  const scrollToOrder = () => document.getElementById("order")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const openOrder = () => setOrderOpen(true);
 
   return (
     <div lang={language} dir={t.dir} className="min-h-screen overflow-x-hidden bg-background pb-20 text-foreground md:pb-0">
@@ -150,7 +152,7 @@ function LandingPage() {
               <button type="button" onClick={() => setLanguage("ar")} className={`rounded-full px-3 py-1.5 transition ${language === "ar" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>العربية</button>
               <button type="button" onClick={() => setLanguage("fr")} className={`rounded-full px-3 py-1.5 transition ${language === "fr" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>Français</button>
             </div>
-            <Button variant="order" size="sm" onClick={scrollToOrder} className="hidden sm:inline-flex">{t.order}</Button>
+            <Button variant="order" size="sm" onClick={openOrder} className="hidden sm:inline-flex">{t.order}</Button>
           </div>
         </div>
       </header>
@@ -167,7 +169,7 @@ function LandingPage() {
                 <span className="rounded-full bg-card px-3 py-2 text-sm font-bold shadow-soft"><CircleDollarSign className="me-1 inline size-4 text-primary" />{t.payment}</span>
               </div>
               <p className="mt-4 flex items-center gap-2 font-semibold"><Truck className="size-5 text-primary" />{t.delivery}</p>
-              <Button variant="order" size="lg" onClick={scrollToOrder} className="mt-7 w-full sm:w-auto">{t.order}<ArrowDown className="size-5" /></Button>
+              <Button variant="order" size="lg" onClick={openOrder} className="mt-7 w-full sm:w-auto">{t.order}<ArrowDown className="size-5" /></Button>
               <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                 {t.trust.slice(0, 3).map((item) => <span key={item} className="flex items-center gap-1.5"><Check className="size-4 text-primary" />{item}</span>)}
               </div>
@@ -211,17 +213,27 @@ function LandingPage() {
 
         <section className="bg-soft py-16"><div className="mx-auto max-w-6xl px-4 text-center sm:px-6"><h2 className="section-title">{t.socialTitle}</h2><p className="section-copy">{t.socialText}</p><div className="mt-7 flex flex-wrap justify-center gap-3"><Social icon={Instagram} label="@Rahtek.dz16" /><Social icon={Phone} label="Facebook · Rahtek.dz16" /><a href="https://wa.me/213555074320" target="_blank" rel="noreferrer" className="social-link"><MessageCircle className="size-5" />0555074320</a></div></div></section>
 
-        <section className="bg-primary py-20 text-primary-foreground"><div className="mx-auto max-w-4xl px-4 text-center sm:px-6"><h2 className="font-display text-3xl font-black sm:text-5xl">{t.finalTitle}</h2><p className="mt-4 text-lg opacity-90">{t.finalText}</p><Button variant="secondary" size="lg" onClick={scrollToOrder} className="mt-8 w-full shadow-order sm:w-auto">{t.finalButton}</Button><div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm opacity-90">{t.trust.map((item) => <span key={item} className="flex items-center gap-1.5"><Check className="size-4" />{item}</span>)}</div></div></section>
+        <section className="bg-primary py-20 text-primary-foreground"><div className="mx-auto max-w-4xl px-4 text-center sm:px-6"><h2 className="font-display text-3xl font-black sm:text-5xl">{t.finalTitle}</h2><p className="mt-4 text-lg opacity-90">{t.finalText}</p><Button variant="secondary" size="lg" onClick={openOrder} className="mt-8 w-full shadow-order sm:w-auto">{t.finalButton}</Button><div className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm opacity-90">{t.trust.map((item) => <span key={item} className="flex items-center gap-1.5"><Check className="size-4" />{item}</span>)}</div></div></section>
       </main>
 
       <footer className="border-t border-border bg-background py-10"><div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 text-center sm:px-6 md:flex-row md:text-start"><div className="flex items-center gap-3"><img src={logoAsset.url} alt="Rahtek" className="size-12 rounded-xl object-cover" /><div><p className="font-display text-lg font-black">Rahtek.dz16</p><p className="text-sm text-muted-foreground">{t.footerNote}</p></div></div><div className="text-sm text-muted-foreground"><a href="https://wa.me/213555074320" target="_blank" rel="noreferrer" className="font-bold text-primary-strong">WhatsApp</a><p className="mt-1">© 2026 Rahtek.dz16</p></div></div></footer>
 
-      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden"><Button variant="order" size="lg" onClick={scrollToOrder} className="w-full">{t.finalButton}</Button></div>
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden"><Button variant="order" size="lg" onClick={openOrder} className="w-full">{t.finalButton}</Button></div>
+
+      <Dialog open={orderOpen} onOpenChange={setOrderOpen}>
+        <DialogContent dir={t.dir} className="max-h-[92svh] w-[calc(100%-1.5rem)] max-w-xl overflow-y-auto rounded-2xl border-border p-4 sm:p-6">
+          <DialogHeader className="pe-8 text-start">
+            <DialogTitle className="font-display text-2xl font-black">{t.formTitle}</DialogTitle>
+            <DialogDescription>{t.formIntro}</DialogDescription>
+          </DialogHeader>
+          <OrderSection language={language} t={t} compact />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-function OrderSection({ language, t }: { language: Language; t: (typeof copy)[Language] }) {
+function OrderSection({ language, t, compact = false }: { language: Language; t: (typeof copy)[Language]; compact?: boolean }) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [serverError, setServerError] = useState("");
