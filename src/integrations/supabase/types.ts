@@ -14,7 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          commune: string
+          created_at: string
+          full_name: string
+          id: string
+          language: string
+          phone_primary: string
+          phone_secondary: string | null
+          price_dzd: number
+          product_name: string
+          status: string
+          wilaya: string
+        }
+        Insert: {
+          commune: string
+          created_at?: string
+          full_name: string
+          id?: string
+          language?: string
+          phone_primary: string
+          phone_secondary?: string | null
+          price_dzd?: number
+          product_name?: string
+          status?: string
+          wilaya: string
+        }
+        Update: {
+          commune?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          language?: string
+          phone_primary?: string
+          phone_secondary?: string | null
+          price_dzd?: number
+          product_name?: string
+          status?: string
+          wilaya?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
